@@ -1,19 +1,9 @@
 from aqt import mw
-from anki.qt import *
+from aqt.qt import *
+from aqt.utils import showInfo
 from PyQt4 import QtCore, QtGui
 
-class OGManager(QDialog):
-
-    def __init__(self, mw):
-        QDialog.__init__(self)
-
-        self.mw = mw
-
-        self.ui = Ui_Dialog()
-        self.ui.setupUi(self)
-
-    def show(self):
-        self.show()
+# ===================== Generated UI Code =====================
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -76,3 +66,34 @@ class Ui_Dialog(object):
         self.btnAdd.setText(_translate("Dialog", "Add", None))
         self.btnRemove.setText(_translate("Dialog", "Remove", None))
         self.btnClose.setText(_translate("Dialog", "Close", None))
+
+
+# ===================== OGManager code =====================
+
+class OGManager(QDialog):
+
+    def __init__(self, mw):
+        QDialog.__init__(self)
+
+        self.mw = mw
+
+        self.ui = Ui_Dialog()
+        self.ui.setupUi(self)
+
+    def refresh(self):
+        showInfo("Ahoj")
+
+    def refresh_and_show(self):
+        self.refresh()
+        self.show()
+
+
+# ===================== Add to Anki's Tools menu =====================
+
+og = OGManager(mw)
+action = QAction("Options Groups Manager", mw)
+mw.connect(action, SIGNAL("triggered()"), og.refresh_and_show)
+mw.form.menuTools.addAction(action)
+
+
+
