@@ -38,15 +38,36 @@
    </item>
    <item>
     <widget class="QTreeWidget" name="treeWidget">
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
+     <property name="dragEnabled">
+      <bool>false</bool>
+     </property>
+     <property name="dragDropOverwriteMode">
+      <bool>false</bool>
+     </property>
+     <property name="dragDropMode">
+      <enum>QAbstractItemView::InternalMove</enum>
+     </property>
+     <property name="defaultDropAction">
+      <enum>Qt::IgnoreAction</enum>
+     </property>
      <property name="animated">
       <bool>true</bool>
      </property>
      <property name="headerHidden">
       <bool>true</bool>
      </property>
+     <property name="expandsOnDoubleClick">
+      <bool>true</bool>
+     </property>
      <column>
       <property name="text">
-       <string notr="true">1</string>
+       <string>1</string>
       </property>
      </column>
     </widget>
