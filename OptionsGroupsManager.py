@@ -81,7 +81,23 @@ class OGManager(QDialog):
         self.ui.setupUi(self)
 
     def refresh(self):
-        showInfo("Ahoj")
+        self.ogs = mw.col.decks.allConf()
+        for og in self.ogs:
+            og_item = QTreeWidgetItem(self.ui.treeWidget)
+            og_item.setFlags(og_item.flags() & ~Qt.ItemIsDragEnabled)
+            og_item.setText(0, og['name'])
+            font = og_item.font(0)
+            font.setBold(True)
+            font.setWeight(75)
+            og_item.setFont(0, font)
+            self.ui.treeWidget.addTopLevelItem(og_item)
+            dids = mw.col.decks.didsForConf(og)
+            for did in dids:
+                deck = mw.col.decks.get(did)
+                deck_item = QTreeWidgetItem(og_item)
+                deck_item.setFlags(og_item.flags() & ~Qt.ItemIsDropEnabled)
+                deck_item.setText(0, deck['name'])
+                og_item.addChild(deck_item)
 
     def refresh_and_show(self):
         self.refresh()
