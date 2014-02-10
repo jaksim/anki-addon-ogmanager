@@ -1,7 +1,10 @@
 from aqt import mw
 from aqt.qt import *
 from aqt.utils import showInfo
+from anki.utils import intTime
 from PyQt4 import QtCore, QtGui
+
+import aqt.deckconf
 
 # ===================== Generated UI Code goes below =====================
 
@@ -89,7 +92,9 @@ class OGManager(QDialog):
 
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
+
         self.ui.treeWidget.viewport().installEventFilter(self)
+        self.ui.treeWidget.itemDoubleClicked.connect(self.handleItemDoubleClick)
 
         root = self.ui.treeWidget.invisibleRootItem()
         root.setFlags(root.flags() & ~Qt.ItemIsDropEnabled)
@@ -107,6 +112,30 @@ class OGManager(QDialog):
             mw.col.decks.setConf(deck, self.ogs[index]['id'])
         return False
 
+    @pyqtSlot(QTreeWidgetItem, int)
+    def handleItemDoubleClick(self, item, column):
+        if item.parent() is None:
+            #Top level item was double clicked
+            index = self.ui.treeWidget.indexOfTopLevelItem(item)
+            
+            #Make sure we have a unique deck name
+            d_name = "A Dummy Deck"
+            while True:
+                if mw.col.decks.byName(d_name) is None:
+                    break
+                else:
+                    d_name = "A Dummy Deck " + str(intTime(1000))
+
+            d_id = mw.col.decks.id(d_name)
+            deck = mw.col.decks.get(d_id)
+            mw.col.decks.setConf(deck, self.ogs[index]['id'])
+            
+            aqt.deckconf.DeckConf(mw, deck)
+
+            mw.col.decks.rem(d_id)
+            self.refresh()
+            mw.reset(True)
+            
     def refresh(self):
         self.ui.treeWidget.clear()
         self.ogs = mw.col.decks.allConf()
