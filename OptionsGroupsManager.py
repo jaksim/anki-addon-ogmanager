@@ -127,7 +127,7 @@ class OGManager(QDialog):
                 deck_item.setText(0, deck['name'])
                 og_item.addChild(deck_item)
 
-    def refresh_and_show(self):
+    def refreshAndShow(self):
         self.refresh()
         self.show()
 
@@ -136,7 +136,7 @@ class OGManager(QDialog):
 
 og = OGManager(mw)
 action = QAction("Options Groups Manager", mw)
-mw.connect(action, SIGNAL("triggered()"), og.refresh_and_show)
+mw.connect(action, SIGNAL("triggered()"), og.refreshAndShow)
 mw.form.menuTools.addAction(action)
 
 
