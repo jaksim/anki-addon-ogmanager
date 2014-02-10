@@ -3,7 +3,7 @@ from aqt.qt import *
 from aqt.utils import showInfo
 from PyQt4 import QtCore, QtGui
 
-# ===================== Generated UI Code =====================
+# ===================== Generated UI Code goes below =====================
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -75,6 +75,7 @@ class Ui_Dialog(object):
         self.btnClose.setText(_translate("Dialog", "Close", None))
 
 
+# ===================== Generated UI code goes above =====================
 
 
 # ===================== OGManager code =====================
@@ -88,8 +89,26 @@ class OGManager(QDialog):
 
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
+        self.ui.treeWidget.viewport().installEventFilter(self)
+
+        root = self.ui.treeWidget.invisibleRootItem()
+        root.setFlags(root.flags() & ~Qt.ItemIsDropEnabled)
+
+    #Event filter allows changing options groups by drag and drop
+    def eventFilter(self, obj, event):
+        if (event.type() == QEvent.DragEnter):
+            self.dragged_item = self.ui.treeWidget.selectedItems()[0]
+        if (event.type() == QEvent.Drop and self.dragged_item):
+            old_parent = self.dragged_item.parent()
+            item_at = self.ui.treeWidget.itemAt(QDropEvent.pos(event))
+            new_parent = item_at.parent() if item_at.parent() else item_at
+            deck = mw.col.decks.byName(self.dragged_item.text(0))
+            index = self.ui.treeWidget.indexOfTopLevelItem(new_parent)
+            mw.col.decks.setConf(deck, self.ogs[index]['id'])
+        return False
 
     def refresh(self):
+        self.ui.treeWidget.clear()
         self.ogs = mw.col.decks.allConf()
         for og in self.ogs:
             og_item = QTreeWidgetItem(self.ui.treeWidget)
@@ -104,7 +123,7 @@ class OGManager(QDialog):
             for did in dids:
                 deck = mw.col.decks.get(did)
                 deck_item = QTreeWidgetItem(og_item)
-                deck_item.setFlags(og_item.flags() & ~Qt.ItemIsDropEnabled)
+                deck_item.setFlags(deck_item.flags() & ~Qt.ItemIsDropEnabled)
                 deck_item.setText(0, deck['name'])
                 og_item.addChild(deck_item)
 
